@@ -1,0 +1,87 @@
+[
+  {
+    "model": "core.doctor",
+    "pk": 1,
+    "fields": {
+      "name": "Dr. Asha Sharma",
+      "specialization": "Cardiologist",
+      "availability": "9AM-1PM",
+      "contact": "9876543210"
+    }
+  },
+  {
+    "model": "core.doctor",
+    "pk": 2,
+    "fields": {
+      "name": "Dr. Ramesh Kumar",
+      "specialization": "Pediatrician",
+      "availability": "2PM-6PM",
+      "contact": "9123456789"
+    }
+  },
+  {
+    "model": "core.patient",
+    "pk": 1,
+    "fields": {
+      "name": "Rahul Verma",
+      "age": 32,
+      "gender": "Male",
+      "contact": "8888888888"
+      
+    }
+  },
+  {
+    "model": "core.patient",
+    "pk": 1,
+    "fields": {
+      "name": "John Doe",
+      "age": 30,
+      "gender": "Male",
+      "contact": "9876543210",
+      "registered_at": "2025-09-12T10:00:00Z"
+    }
+  },
+  {
+    "model": "core.patient",
+    "pk": 2,
+    "fields": {
+      "name": "Jane Smith",
+      "age": 25,
+      "gender": "Female",
+      "contact": "9123456780",
+      "registered_at": "2025-09-12T11:00:00Z"
+    }
+  },
+  {
+    "model": "core.appointment",
+    "pk": 2,
+    "fields": {
+      "patient": 2,
+      "doctor": 2,
+      "date": "2025-09-16",
+      "time": "11:00:00",
+      "status": "Scheduled",
+      "prescription": "Syrup B - 2ml"
+    }
+  },
+  {
+    "model": "core.bill",
+    "pk": 1,
+    "fields": {
+      "patient": 1,
+      "amount": "1500.00",
+      "date": "2025-09-10",
+      "status": "Paid"
+    }
+  },
+  {
+    "model": "core.bill",
+    "pk": 2,
+    "fields": {
+      "patient": 2,
+      "amount": "2000.00",
+      "date": "2025-09-10",
+      "status": "Unpaid"
+    }
+  }
+]
