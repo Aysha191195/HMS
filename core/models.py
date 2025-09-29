@@ -13,8 +13,38 @@ class Patient(models.Model):
     gender = models.CharField(max_length=10)
     contact = models.CharField(max_length=15, null=True, blank=True)  # ✅ auto timestamp
     registered_at = models.DateTimeField(auto_now_add=True) 
+    # 🔹 Health tracking fields
+    blood_pressure = models.CharField(max_length=20, blank=True, null=True)  # e.g., "140/90"
+    heart_rate = models.IntegerField(blank=True, null=True)
+    sugar_level = models.FloatField(blank=True, null=True)
+    temperature = models.FloatField(blank=True, null=True)
+    risk_level = models.CharField(max_length=20, default="Low") 
+
     def __str__(self):
         return self.name
+    
+def calculate_risk(self):
+        risk = "Low"
+
+        if self.blood_pressure:
+            try:
+                systolic = int(self.blood_pressure.split('/')[0])
+                if systolic > 140:
+                    risk = "High"
+            except:
+                pass
+
+        if self.heart_rate and (self.heart_rate < 60 or self.heart_rate > 100):
+            risk = "High"
+
+        if self.temperature and self.temperature > 38:
+            risk = "High"
+
+        return risk
+
+def save(self, *args, **kwargs):
+        self.risk_level = self.calculate_risk()
+        super().save(*args, **kwargs)    
 
 class Appointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
@@ -31,3 +61,4 @@ class Bill(models.Model):
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=[('Paid','Paid'),('Unpaid','Unpaid')], default='Unpaid')
     def __str__(self): return f"Bill for {self.patient.name} - {self.amount}"
+
