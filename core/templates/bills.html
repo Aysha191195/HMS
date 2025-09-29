@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block content %}<h2>Bills <a class="btn btn-sm btn-success float-end" href="/bills/add/">Add</a></h2>
+<table class="table table-striped"><tr><th>ID</th><th>Patient</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+{% for b in bills %}<tr><td>{{ b.id }}</td><td>{{ b.patient.name }}</td><td>₹ {{ b.amount }}</td><td>{{ b.date }}</td><td>{{ b.status }}</td>
+<td><a class='btn btn-sm btn-warning' href='/bills/edit/{{ b.id }}/'>Edit</a> <a class='btn btn-sm btn-danger' href='/bills/delete/{{ b.id }}/'>Delete</a></td></tr>{% endfor %}</table>{% endblock %}

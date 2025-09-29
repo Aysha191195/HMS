@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block content %}<h2>Reports</h2><a class="btn btn-success mb-3" href="/reports/download/">Download Full Report (PDF)</a>
+<table class="table table-bordered"><thead class="table-dark"><tr><th>Patient</th><th>Doctor</th><th>Appt Date</th><th>Prescription</th><th>Bill</th><th>Invoice</th></tr></thead><tbody>
+{% for r in report_data %}<tr><td>{{ r.patient.name }}</td><td>{{ r.doctor.name }}</td><td>{{ r.date }} {{ r.time }}</td><td style="max-width:300px">{{ r.prescription }}</td>
+<td>{% if r.bill %}₹ {{ r.bill.amount }} ({{ r.bill.status }}){% else %}No bill{% endif %}</td><td>{% if r.bill %}<a class="btn btn-sm btn-primary" href="/invoice/{{ r.patient.id }}/">Invoice</a>{% endif %}</td></tr>{% endfor %}</tbody></table>{% endblock %}

@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<h2>Delete Doctor</h2><p>Delete {{ doctor.name }}?</p><form method='post'>{% csrf_token %}<button class='btn btn-danger'>Yes Delete</button> <a class='btn btn-secondary' href='/doctors/'>Cancel</a></form>{% endblock %}

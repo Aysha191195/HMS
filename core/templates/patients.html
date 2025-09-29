@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>
+  Patients 
+  <a class="btn btn-sm btn-success float-end" href="/patients/add/">Add</a>
+</h2>
+
+<table class="table table-striped">
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Age</th>
+    <th>Gender</th>
+    <th>Contact</th>
+    <th>Registered At</th> <!-- ✅ New column -->
+    <th>Actions</th>
+  </tr>
+  {% for p in patients %}
+  <tr>
+    <td>{{ p.id }}</td>
+    <td>{{ p.name }}</td>
+    <td>{{ p.age }}</td>
+    <td>{{ p.gender }}</td>
+    <td>{{ p.contact }}</td>
+    <td>{{ p.registered_at|date:"Y-m-d H:i" }}</td> <!-- ✅ Show date -->
+    <td>
+      <a class="btn btn-sm btn-warning" href="/patients/edit/{{ p.id }}/">Edit</a>
+      <a class="btn btn-sm btn-danger" href="/patients/delete/{{ p.id }}/">Delete</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

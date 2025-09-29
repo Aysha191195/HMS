@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container-fluid mt-4">
+
+  <!-- Metrics Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+      <div class="gradient-card gradient1 text-center">
+        <div class="card-title">Patients</div>
+        <div class="card-number">{{ patients_count }}</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="gradient-card gradient2 text-center">
+        <div class="card-title">Doctors</div>
+        <div class="card-number">{{ doctors_count }}</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="gradient-card gradient3 text-center">
+        <div class="card-title">Appointments</div>
+        <div class="card-number">{{ appointments_count }}</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="gradient-card gradient4 text-center">
+        <div class="card-title">Bills</div>
+        <div class="card-number">{{ bills_count }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="chart-card">
+        <h5>Appointments This Week</h5>
+        <canvas id="appointmentsChart"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="chart-card">
+        <h5>Patients Over Months</h5>
+        <canvas id="patientsChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Appointments Table -->
+  <div class="row g-4 mt-3">
+    <div class="col-12">
+      <div class="chart-card">
+        <h5>Recent Appointments</h5>
+        <div class="table-responsive">
+          <table class="table table-hover mt-2">
+            <thead class="table-dark">
+              <tr>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for appointment in appointments %}
+              <tr>
+                <td>{{ appointment.patient.name }}</td>
+                <td>{{ appointment.doctor.name }}</td>
+                <td>{{ appointment.date }}</td>
+                <td>{{ appointment.status }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center">No appointments found.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Appointments Chart
+  const ctxAppointments = document.getElementById('appointmentsChart').getContext('2d');
+  new Chart(ctxAppointments, {
+    type: 'bar',
+    data: {
+      labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      datasets: [{
+        label: 'Appointments',
+        data: [12, 19, 7, 5, 8, 3, 10], // replace with dynamic data if needed
+        backgroundColor: '#667eea',
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // Patients Chart
+  const ctxPatients = document.getElementById('patientsChart').getContext('2d');
+  new Chart(ctxPatients, {
+    type: 'line',
+    data: {
+      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'], // replace with dynamic months
+      datasets: [{
+        label: 'Patients',
+        data: [30, 40, 35, 50, 45, 60, 55], // replace with dynamic data
+        borderColor: '#ff416c',
+        backgroundColor: 'rgba(255,65,108,0.2)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+{% endblock %}
