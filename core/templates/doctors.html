@@ -1,4 +1,19 @@
-{% extends 'base.html' %}{% block content %}<h2>Doctors <a class="btn btn-sm btn-success float-end" href="/doctors/add/">Add</a></h2>
-<table class="table table-striped"><tr><th>ID</th><th>Name</th><th>Specialization</th><th>Availability</th><th>Actions</th></tr>{% for d in doctors %}
-<tr><td>{{ d.id }}</td><td>{{ d.name }}</td><td>{{ d.specialization }}</td><td>{{ d.availability }}</td>
-<td><a class="btn btn-sm btn-warning" href="/doctors/edit/{{ d.id }}/">Edit</a> <a class="btn btn-sm btn-danger" href="/doctors/delete/{{ d.id }}/">Delete</a></td></tr>{% endfor %}</table>{% endblock %}
+{% extends 'base.html' %}
+{% block content %}
+<h2>Doctors <a class="btn btn-sm btn-success float-end" href="/doctors/add/">Add</a></h2>
+<table class="table table-striped">
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Specialization</th>
+<th>Availability</th>
+<th>Actions</th>
+</tr>
+{% for d in doctors %}
+<tr>
+<td>{{ d.id }}</td>
+<td>{{ d.name }}</td>
+<td>{{ d.specialization }}</td>
+<td>{{ d.availability }}</td>
+<td><a class="btn btn-sm btn-warning" href="/doctors/edit/{{ d.id }}/">Edit</a> <a class="btn btn-sm btn-danger" href="/doctors/delete/{{ d.id }}/">Delete</a></td></tr>{% endfor %}</table>
+{% endblock %}
