@@ -11,18 +11,16 @@ class Patient(models.Model):
     name = models.CharField(max_length=100)
     age = models.IntegerField()
     gender = models.CharField(max_length=10)
-    contact = models.CharField(max_length=15, null=True, blank=True)  # ✅ auto timestamp
-    registered_at = models.DateTimeField(auto_now_add=True) 
-    # 🔹 Health tracking fields
-    blood_pressure = models.CharField(max_length=20, blank=True, null=True)  # e.g., "140/90"
+    contact = models.CharField(max_length=15, null=True, blank=True)
+    registered_at = models.DateTimeField(auto_now_add=True)
+
+    blood_pressure = models.CharField(max_length=20, blank=True, null=True)
     heart_rate = models.IntegerField(blank=True, null=True)
     sugar_level = models.FloatField(blank=True, null=True)
     temperature = models.FloatField(blank=True, null=True)
-    risk_level = models.CharField(max_length=50, null=True, blank=True) 
-    def __str__(self):
-        return self.name
-    
-def calculate_risk(self):
+    risk_level = models.CharField(max_length=50, null=True, blank=True)
+
+    def calculate_risk(self):
         risk = "Low"
 
         if self.blood_pressure:
@@ -30,20 +28,30 @@ def calculate_risk(self):
                 systolic = int(self.blood_pressure.split('/')[0])
                 if systolic > 140:
                     risk = "High"
+                elif systolic > 120:
+                    risk = "Moderate"
             except:
                 pass
 
         if self.heart_rate and (self.heart_rate < 60 or self.heart_rate > 100):
             risk = "High"
 
+        if self.sugar_level and self.sugar_level > 180:
+            risk = "High"
+
         if self.temperature and self.temperature > 38:
             risk = "High"
 
-        return risk
+        return risk.capitalize()
 
-def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
+        # Auto-update risk before saving
         self.risk_level = self.calculate_risk()
-        super().save(*args, **kwargs)    
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
 
 class Appointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
