@@ -24,42 +24,14 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
-# Patients
 def patients(request):
+    risk_filter = request.GET.get('risk')
     patients = Patient.objects.all()
 
-    # Loop through each patient
-    for p in patients:
-        risk = "Low"   # default
-
-        # ✅ Check blood pressure
-        if p.blood_pressure:   # if not empty
-            try:
-                systolic = int(p.blood_pressure.split('/')[0])  # take the first value before "/"
-                if systolic > 140:
-                    risk = "High"
-                elif systolic > 120:
-                    risk = "Moderate"
-            except:
-                pass
-
-        # ✅ Check heart rate
-        if p.heart_rate and (p.heart_rate < 60 or p.heart_rate > 100):
-            risk = "High"
-
-        # ✅ Check sugar level
-        if p.sugar_level and p.sugar_level > 180:
-            risk = "High"
-
-        # ✅ Check temperature
-        if p.temperature and p.temperature > 38:
-            risk = "High"
-
-        # Add risk level to patient object (temporary)
-        p.risk_level = risk
+    if risk_filter:
+        patients = patients.filter(risk_level=risk_filter)
 
     return render(request, "patients.html", {"patients": patients})
-
 def add_patient(request):
     form = PatientForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
