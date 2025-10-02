@@ -1,57 +1,53 @@
 import csv
 from django.core.management.base import BaseCommand
-from datetime import datetime
+from django.utils.dateparse import parse_datetime
 from core.models import Patient
 
 class Command(BaseCommand):
-    help = 'Import patients from CSV file'
+    help = 'Import patients from CSV file (clears old data first)'
 
     def handle(self, *args, **kwargs):
-        csv_path = 'core/dataset/patients_dataset.csv'  # Update path if needed
+        csv_path = 'core/dataset/patients_dataset.csv'
 
-        def to_int(value, default=0):
-            try:
-                return int(value)
-            except (ValueError, TypeError):
-                return default
+        # Delete old data
+        deleted_count, _ = Patient.objects.all().delete()
+        self.stdout.write(self.style.SUCCESS(f'Deleted {deleted_count} old patient records.'))
 
-        def to_float(value, default=0.0):
-            try:
-                return float(value)
-            except (ValueError, TypeError):
-                return default
-
-        def parse_date(value):
-            try:
-                # your CSV format: "29-04-2025 14:37"
-                return datetime.strptime(value, "%d-%m-%Y %H:%M")
-            except (ValueError, TypeError):
-                return None
-
+        # Import new data
         with open(csv_path, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
-            headers = [h.strip() for h in reader.fieldnames]
-            print("CSV headers detected:", headers)
+            new_count = 0
 
             for row in reader:
-                row = {k.strip(): v.strip() for k, v in row.items()}
-
-                if not row.get('Name'):
-                    continue
-
                 try:
-                    Patient.objects.create(
-                        name=row.get('Name', ''),
-                        age=to_int(row.get('Age')),
-                        gender=row.get('Gender', ''),
-                        contact=row.get('Contact', ''),
-                        registered_at=parse_date(row.get('Registered_At')),
-                        blood_pressure=row.get('BP', ''),
-                        heart_rate=to_int(row.get('Heart_Rate')),
-                        sugar_level=to_int(row.get('Sugar')),
-                        temperature=to_float(row.get('Temp')),
-                        risk_level=row.get('Risk', '')
+                    # Clean whitespace
+                    row = {k.strip(): v.strip() for k, v in row.items()}
+
+                    # Parse registered_at properly (format: DD-MM-YYYY HH:MM)
+                    registered_at = parse_datetime(
+                        "-".join(row['Registered_At'].split(" ")[0].split("-")[::-1]) + 
+                        " " + row['Registered_At'].split(" ")[1]
                     )
-                    self.stdout.write(self.style.SUCCESS(f"Imported {row.get('Name')}"))
+
+                    # Create patient
+                    patient = Patient(
+                        id=row['ID'],
+                        name=row['Name'],
+                        age=int(row['Age']),
+                        gender=row['Gender'],
+                        contact=row['Contact'] or None,
+                        registered_at=registered_at,
+                        blood_pressure=row['BP'] or None,
+                        heart_rate=int(row['Heart_Rate']) if row['Heart_Rate'] else None,
+                        sugar_level=float(row['Sugar']) if row['Sugar'] else None,
+                        temperature=float(row['Temp']) if row['Temp'] else None,
+                    )
+
+                    patient.save()  # risk_level auto-calculated
+
+                    new_count += 1
+
                 except Exception as e:
-                    self.stderr.write(f"Error importing row {row}: {e}")
+                    self.stdout.write(self.style.ERROR(f"Error importing row {row}: {e}"))
+
+        self.stdout.write(self.style.SUCCESS(f'Successfully imported {new_count} new patients.'))
