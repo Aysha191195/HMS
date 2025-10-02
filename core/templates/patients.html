@@ -28,19 +28,19 @@
     <td>{{ p.gender }}</td>
     <td>{{ p.contact }}</td>
     <td>{{ p.registered_at|date:"Y-m-d H:i" }}</td> <!-- ✅ Show date -->
-     <td>{{ p.blood_pressure }}</td>
+    <td>{{ p.blood_pressure }}</td>
     <td>{{ p.heart_rate }}</td>
     <td>{{ p.sugar_level }}</td>
     <td>{{ p.temperature }}</td>
-   <td>
-    {% if p.risk_level == "High" %}
-      <span class="badge bg-danger">High</span>
-    {% elif p.risk_level == "Moderate" %}
-      <span class="badge bg-warning text-dark">Moderate</span>
-    {% else %}
-      <span class="badge bg-success">Low</span>
-    {% endif %}
-  </td>
+<td>
+  {% if p.risk_level == "High" %}
+    <span class="badge bg-danger">High</span>
+  {% elif p.risk_level == "Moderate" %}
+    <span class="badge bg-warning text-dark">Moderate</span>
+  {% else %}
+    <span class="badge bg-success">Low</span>
+  {% endif %}
+</td>
     <td>
       <a class="btn btn-sm btn-warning" href="/patients/edit/{{ p.id }}/">Edit</a>
       <a class="btn btn-sm btn-danger" href="/patients/delete/{{ p.id }}/">Delete</a>
